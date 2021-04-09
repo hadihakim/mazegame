@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>maze game</title>
+	<link rel="stylesheet" type="text/css" href="./maze.css">
+	<script src="maze.js" type="text/javascript"></script>
+</head>
+<body onLoad="changeState()">
+	<p style="color:#f00; font-size: 20px; font-weight: bold;">Time: <span id="my_timer" style="color:#f00; font-size: 20px; font-weight: bold;">00:00:-01</span></p>
+
+	<h1>The Amazing Mouse Maze!</h1>
+	<h2 id="status"></h2>
+	<div id="maze">
+		<div id="start">S</div>
+		<div  class="boundary" id="boundary1"></div>
+		<div  class="boundary"></div>
+		<div  class="boundary"></div>
+		<div  class="boundary"></div>
+		<div  class="boundary"></div>
+		<div id="end">E</div>
+
+    </div>
+    <div id="wall"></div>
+    <button style="width: 100px;height:50px" onclick="location.href='./maze.html'" id="restart">Restart</button>
+
+<script type="text/javascript">
+	
+	var mousePosition;
+var offset = [0,0];
+var div;
+var isDown = false;
+	
+div = document.getElementById("start");
+
+div.addEventListener('mousedown', function(e) {
+    isDown = true;
+    offset = [
+        div.offsetLeft - e.clientX,
+        div.offsetTop - e.clientY
+    ];
+}, true);
+
+document.addEventListener('mouseup', function() {
+    isDown = false;
+}, true);
+
+document.addEventListener('mousemove', function(event) {
+	
+
+    event.preventDefault();
+    if (isDown) {
+        mousePosition = {
+
+            x : event.clientX,
+            y : event.clientY
+
+        };
+
+let divs = document.querySelectorAll(".boundary");
+if (checkCollision(document.getElementById("start"), divs[0]) || checkCollision(document.getElementById("start"), divs[1]) || checkCollision(document.getElementById("start"), divs[2]) || checkCollision(document.getElementById("start"), divs[3]) || checkCollision(document.getElementById("start"), divs[4]) || checkCollision(document.getElementById("start"), document.getElementById("wall") ) ) {
+
+  let i;
+  divs[0].style.backgroundColor = "red";
+  divs[1].style.backgroundColor = "red";
+  divs[2].style.backgroundColor = "red";
+  divs[3].style.backgroundColor = "red";
+  divs[4].style.backgroundColor = "red";
+  document.getElementById("status").innerHTML = "You Lose! :(";
+  document.getElementById("start").remove();
+
+    
+}
+
+ if (checkCollision(document.getElementById("start"),document.getElementById("end") ))
+ {
+ 	let i;
+  divs[0].style.backgroundColor = "green";
+  divs[1].style.backgroundColor = "green";
+  divs[2].style.backgroundColor = "green";
+  divs[3].style.backgroundColor = "green";
+  divs[4].style.backgroundColor = "green";
+  document.getElementById("status").innerHTML = "You Win! :)";
+  document.getElementById("start").remove();
+
+ 
+}
+        div.style.left = (mousePosition.x + offset[0]) + 'px';
+        div.style.top  = (mousePosition.y + offset[1]) + 'px';
+    }
+}, true);
+
+
+function checkCollision(elm1, elm2) {
+  var elm1Rect = elm1.getBoundingClientRect();
+  var elm2Rect = elm2.getBoundingClientRect();
+
+  return (elm1Rect.right >= elm2Rect.left &&
+      elm1Rect.left <= elm2Rect.right) &&
+    (elm1Rect.bottom >= elm2Rect.top &&
+      elm1Rect.top <= elm2Rect.bottom);
+}
+
+
+function start_timer(){
+	if (document.getElementById("boundary1").style.backgroundColor == "red" ||
+		document.getElementById("boundary1").style.backgroundColor == "green") {
+		return;
+	}
+	if (active == false) {
+		var timer = document.getElementById("my_timer").innerHTML;
+		var arr = timer.split(":");
+		var hour = arr[0];
+		var min = arr[1];
+		var sec = arr[2];
+		if(sec == 59){
+			if (min == 59) {
+				hour++;
+				min = 0;
+				if (hour < 10) hour = "0" + hour;
+			}
+			
+			else {
+				min++
+			}
+			if (min < 10) min = "0" + min;
+			sec = 0;
+		} else{
+			sec++;
+			if (sec < 10) sec = "0" +sec; 
+		}
+
+		document.getElementById("my_timer").innerHTML = hour +":"+min+":"+sec;
+		setTimeout(start_timer,1000);
+
+		}
+	}
+
+	function changeState(){
+		active = true;
+		if (active == true) {
+			active = false;
+			start_timer();	
+		}
+	}
+
+</script>
+
+</body>
+</html>
